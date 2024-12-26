@@ -63,6 +63,6 @@ public class BookService {
     }
 
     public List<BookDto> viewAvailableBook(){
-        return new ArrayList<>();
+        return bookRepository.findByIsAvailableTrue();
     }
 }
