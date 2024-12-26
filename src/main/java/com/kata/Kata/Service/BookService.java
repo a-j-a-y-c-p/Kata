@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -39,7 +40,13 @@ public class BookService {
     }
 
     public void returnBook(String id){
+        Optional<Book> book = bookRepository.findById(id);
 
+        if(book.isPresent()){
+            Book book1 = book.get();
+            book1.setIsAvailable(true);
+            bookRepository.save(book1);
+        }
     }
 
     public List<BookDto> viewAvailableBook(){
