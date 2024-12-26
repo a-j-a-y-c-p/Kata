@@ -36,7 +36,20 @@ public class BookService {
     }
 
     public void borrowBook(String id){
+        Optional<Book> book = bookRepository.findById(id);
 
+        if(book.isEmpty()){
+            return;
+        }
+
+        Book book1 = book.get();
+
+        if(!book1.getIsAvailable()){
+            return;
+        }
+
+        book1.setIsAvailable(false);
+        bookRepository.save(book1);
     }
 
     public void returnBook(String id){
