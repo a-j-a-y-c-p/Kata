@@ -77,6 +77,6 @@ public class BookService {
         if(books.isEmpty()){
             throw new BookNotFoundException("No book found.");
         }
-        return bookRepository.findByIsAvailableTrue();
+        return books;
     }
 }
