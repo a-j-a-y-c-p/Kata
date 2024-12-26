@@ -1,6 +1,7 @@
 package com.kata.Kata.Controller;
 
 import com.kata.Kata.Dto.BookDto;
+import com.kata.Kata.Exceptions.BookIdAlreadyExistException;
 import com.kata.Kata.Exceptions.BookNotAvailableException;
 import com.kata.Kata.Exceptions.BookNotFoundException;
 import com.kata.Kata.Exceptions.InvalidBookException;
@@ -34,7 +35,7 @@ public class BookController {
             bookService.addBook(book);
             return new ResponseEntity<String>("Book added successfully",HttpStatus.CREATED);
         }
-        catch (InvalidBookException e){
+        catch (InvalidBookException | BookIdAlreadyExistException e){
             return new ResponseEntity<String>("Error: " + e.getMessage(),HttpStatus.BAD_REQUEST);
         }
         catch (Exception e){

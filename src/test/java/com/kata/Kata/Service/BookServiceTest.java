@@ -1,6 +1,7 @@
 package com.kata.Kata.Service;
 
 import com.kata.Kata.Dto.BookDto;
+import com.kata.Kata.Exceptions.BookIdAlreadyExistException;
 import com.kata.Kata.Exceptions.BookNotAvailableException;
 import com.kata.Kata.Exceptions.BookNotFoundException;
 import com.kata.Kata.Exceptions.InvalidBookException;
@@ -52,6 +53,17 @@ class BookServiceTest {
 
         InvalidBookException exception = assertThrows(InvalidBookException.class, () -> bookService.addBook(invalidBookDto));
         assertEquals("Invalid book details.", exception.getMessage());
+        verify(bookRepository, times(0)).save(Mockito.any(Book.class));
+    }
+
+    @Test
+    void addBook_IdAlreadyExist() {
+        BookDto inputBook = new BookDto("1", "Test Author", "Test Title", 2024);
+        when(bookRepository.findById(inputBook.getId())).thenReturn(Optional.of(new Book()));
+
+        BookIdAlreadyExistException exception = assertThrows(BookIdAlreadyExistException.class, () -> bookService.addBook(inputBook));
+        assertEquals("Id already exist.", exception.getMessage());
+        verify(bookRepository, times(1)).findById(inputBook.getId());
         verify(bookRepository, times(0)).save(Mockito.any(Book.class));
     }
 

@@ -1,6 +1,7 @@
 package com.kata.Kata.Service;
 
 import com.kata.Kata.Dto.BookDto;
+import com.kata.Kata.Exceptions.BookIdAlreadyExistException;
 import com.kata.Kata.Exceptions.BookNotAvailableException;
 import com.kata.Kata.Exceptions.BookNotFoundException;
 import com.kata.Kata.Exceptions.InvalidBookException;
@@ -32,6 +33,10 @@ public class BookService {
     public void addBook(BookDto book){
         if(book.getId() == null){
             throw new InvalidBookException("Invalid book details.");
+        }
+
+        if(bookRepository.findById(book.getId()).isPresent()){
+            throw new BookIdAlreadyExistException("Id already exist.");
         }
 
         bookRepository.save(bookMapping(book));
