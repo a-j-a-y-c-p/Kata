@@ -31,7 +31,7 @@ public class BookService {
 
     public void addBook(BookDto book){
         if(book.getId() == null){
-            return;
+            throw new InvalidBookException("Invalid book details.");
         }
 
         bookRepository.save(bookMapping(book));

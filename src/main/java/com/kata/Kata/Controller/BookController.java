@@ -34,6 +34,9 @@ public class BookController {
             bookService.addBook(book);
             return new ResponseEntity<String>("Book added successfully",HttpStatus.CREATED);
         }
+        catch (InvalidBookException e){
+            return new ResponseEntity<String>("Error: " + e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
         catch (Exception e){
             return new ResponseEntity<String>("Error adding book: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
