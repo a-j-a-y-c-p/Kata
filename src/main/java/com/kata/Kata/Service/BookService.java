@@ -1,12 +1,14 @@
 package com.kata.Kata.Service;
 
 import com.kata.Kata.Dto.BookDto;
+import com.kata.Kata.Exceptions.BookNotAvailableException;
+import com.kata.Kata.Exceptions.BookNotFoundException;
+import com.kata.Kata.Exceptions.InvalidBookException;
 import com.kata.Kata.Model.Book;
 import com.kata.Kata.Repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,16 +38,16 @@ public class BookService {
     }
 
     public void borrowBook(String id){
-        Optional<Book> book = bookRepository.findById(id);
+        Optional<Book> book= bookRepository.findById(id);
 
         if(book.isEmpty()){
-            return;
+            throw new BookNotFoundException("Book with ID-" + id + " is not found.");
         }
 
         Book book1 = book.get();
 
         if(!book1.getIsAvailable()){
-            return;
+            throw new BookNotAvailableException("Book with ID-" + id + " is already borrowed.");
         }
 
         book1.setIsAvailable(false);
@@ -55,14 +57,26 @@ public class BookService {
     public void returnBook(String id){
         Optional<Book> book = bookRepository.findById(id);
 
-        if(book.isPresent()){
-            Book book1 = book.get();
-            book1.setIsAvailable(true);
-            bookRepository.save(book1);
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book with ID-" + id + " is not found.");
         }
+
+        Book book1 = book.get();
+
+        if(book1.getIsAvailable()){
+            throw new InvalidBookException("Book with ID-" + id + " was not borrowed.");
+        }
+
+        book1.setIsAvailable(true);
+        bookRepository.save(book1);
     }
 
     public List<BookDto> viewAvailableBook(){
+        List<BookDto> books = bookRepository.findByIsAvailableTrue();
+
+        if(books.isEmpty()){
+            throw new BookNotFoundException("No book found.");
+        }
         return bookRepository.findByIsAvailableTrue();
     }
 }
